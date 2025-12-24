@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Садху Практика</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">SADHU FLOW</div>
+            <p class="subtitle">Путь к себе через гвоздестояние</p>
+        </header>
+
+        <section class="card webinar-card">
+            <div class="badge">Бесплатный Вебинар</div>
+            <h2>Основы практики Садху</h2>
+            <p class="description">Узнайте, как гвоздестояние меняет жизнь, укрепляет дух и оздоравливает тело.</p>
+            
+            <div class="timer-container">
+                <p class="timer-label">Начало через:</p>
+                <div id="countdown" class="countdown">
+                    <div class="time-unit">
+                        <span id="days">00</span>
+                        <small>Дней</small>
+                    </div>
+                    <div class="separator">:</div>
+                    <div class="time-unit">
+                        <span id="hours">00</span>
+                        <small>Часов</small>
+                    </div>
+                    <div class="separator">:</div>
+                    <div class="time-unit">
+                        <span id="minutes">00</span>
+                        <small>Мин</small>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-register" class="btn btn-primary" onclick="handleRegistration()">
+                Записаться на вебинар
+            </button>
+        </section>
+
+        <section class="card course-card">
+            <h2>Видеокурс "Мастер Садху"</h2>
+            <ul class="features-list">
+                <li>📹 15 видео-уроков</li>
+                <li>🧘‍♂️ Медитации для входа</li>
+                <li>📚 Методичка по безопасности</li>
+                <li>🏆 Сертификат прохождения</li>
+            </ul>
+            <div class="price-tag">
+                <span class="old-price">5 990 ₽</span>
+                <span class="new-price">2 990 ₽</span>
+            </div>
+            <button class="btn btn-secondary" onclick="handleBuyClick()">
+                Купить курс
+            </button>
+        </section>
+    </div>
+
+    <!-- Модалка успеха -->
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="icon-check">✨</div>
+            <h3>Вы успешно записаны!</h3>
+            <p>Мы напомним вам о вебинаре за 1 час до начала.</p>
+            <button class="btn btn-primary" onclick="closeApp()">Отлично</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
