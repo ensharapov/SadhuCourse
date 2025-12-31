@@ -1,80 +1,145 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Садху Практика</title>
+    <title>Гвозди Просто — Эфир 3 января</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
+
 <body>
     <div class="container">
-        <header class="header">
-            <div class="logo">SADHU FLOW</div>
-            <p class="subtitle">Путь к себе через гвоздестояние</p>
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="logo-container">
+                <div class="logo-icon">🔥</div>
+                <h1 class="logo">Гвозди Просто</h1>
+            </div>
+            <p class="tagline">Безопасный вход в практику досок Садху</p>
         </header>
 
+        <!-- Webinar Card -->
         <section class="card webinar-card">
-            <div class="badge">Бесплатный Вебинар</div>
-            <h2>Основы практики Садху</h2>
-            <p class="description">Узнайте, как гвоздестояние меняет жизнь, укрепляет дух и оздоравливает тело.</p>
-            
+            <div class="badge live-badge">
+                <span class="pulse"></span>
+                Бесплатный Эфир
+            </div>
+
+            <h2 class="card-title">Как гвозди меняют жизнь</h2>
+            <p class="card-description">
+                Убери хроническое напряжение и запусти личную трансформацию через работу с телом и сознанием
+            </p>
+
+            <!-- Countdown Timer -->
             <div class="timer-container">
-                <p class="timer-label">Начало через:</p>
-                <div id="countdown" class="countdown">
-                    <div class="time-unit">
-                        <span id="days">00</span>
-                        <small>Дней</small>
+                <p class="timer-label">До эфира осталось:</p>
+                <div class="countdown" id="countdown">
+                    <div class="time-block">
+                        <span class="time-value" id="days">00</span>
+                        <span class="time-label">дней</span>
                     </div>
-                    <div class="separator">:</div>
-                    <div class="time-unit">
-                        <span id="hours">00</span>
-                        <small>Часов</small>
+                    <div class="time-separator">:</div>
+                    <div class="time-block">
+                        <span class="time-value" id="hours">00</span>
+                        <span class="time-label">часов</span>
                     </div>
-                    <div class="separator">:</div>
-                    <div class="time-unit">
-                        <span id="minutes">00</span>
-                        <small>Мин</small>
+                    <div class="time-separator">:</div>
+                    <div class="time-block">
+                        <span class="time-value" id="minutes">00</span>
+                        <span class="time-label">минут</span>
                     </div>
+                </div>
+                <p class="event-date">3 января, 19:00 МСК</p>
+            </div>
+
+            <!-- Features -->
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">🎯</span>
+                    <span>Теория и практика</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">💬</span>
+                    <span>Ответы на вопросы</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🎁</span>
+                    <span>Розыгрыш доски</span>
                 </div>
             </div>
 
-            <button id="btn-register" class="btn btn-primary" onclick="handleRegistration()">
-                Записаться на вебинар
-            </button>
+            <div class="register-info" id="register-info">
+                <p class="info-text">💬 Чтобы записаться, напиши боту в чат</p>
+            </div>
         </section>
 
+        <!-- Course Preview Card -->
         <section class="card course-card">
-            <h2>Видеокурс "Мастер Садху"</h2>
-            <ul class="features-list">
-                <li>📹 15 видео-уроков</li>
-                <li>🧘‍♂️ Медитации для входа</li>
-                <li>📚 Методичка по безопасности</li>
-                <li>🏆 Сертификат прохождения</li>
+            <h2 class="card-title">Видеокурс «Гвозди Просто»</h2>
+
+            <ul class="course-features">
+                <li>
+                    <span class="check-icon">✓</span>
+                    6 видео-уроков теории
+                </li>
+                <li>
+                    <span class="check-icon">✓</span>
+                    Пошаговые практики
+                </li>
+                <li>
+                    <span class="check-icon">✓</span>
+                    40-дневный марафон трансформации
+                </li>
+                <li>
+                    <span class="check-icon">✓</span>
+                    Чек-лист безопасности
+                </li>
             </ul>
-            <div class="price-tag">
-                <span class="old-price">5 990 ₽</span>
-                <span class="new-price">2 990 ₽</span>
+
+            <div class="price-container">
+                <span class="price-old">5 990 ₽</span>
+                <span class="price-new">4 790 ₽</span>
+                <span class="discount-badge">-20%</span>
             </div>
-            <button class="btn btn-secondary" onclick="handleBuyClick()">
+
+            <!-- Social Proof -->
+            <div class="social-proof">
+                <div class="avatars">
+                    <div class="avatar">👤</div>
+                    <div class="avatar">👤</div>
+                    <div class="avatar">👤</div>
+                </div>
+                <span class="buyers-text"><strong id="buyers-count">50</strong>+ уже купили</span>
+            </div>
+
+            <button class="btn btn-secondary" id="btn-buy">
                 Купить курс
             </button>
         </section>
+
+        <!-- Channel Link -->
+        <a href="https://t.me/telminov_life8" class="channel-link">
+            📢 Телеграм-канал автора
+        </a>
     </div>
 
-    <!-- Модалка успеха -->
-    <div id="success-modal" class="modal hidden">
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-overlay"></div>
         <div class="modal-content">
-            <div class="icon-check">✨</div>
-            <h3>Вы успешно записаны!</h3>
-            <p>Мы напомним вам о вебинаре за 1 час до начала.</p>
-            <button class="btn btn-primary" onclick="closeApp()">Отлично</button>
+            <div class="modal-icon">✨</div>
+            <h3>Отлично!</h3>
+            <p>Вы записаны на эфир. Напомним за час до начала.</p>
+            <button class="btn btn-primary" id="btn-close-modal">Понятно</button>
         </div>
     </div>
 
     <script src="app.js"></script>
 </body>
+
 </html>
