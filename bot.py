@@ -20,7 +20,7 @@ import scheduler
 # Load environment variables
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_USERNAME = messages.ADMIN_USERNAME  # @Sadhustas
+ADMIN_USERNAMES = messages.ADMIN_USERNAMES  # [@evgenii_sharapov, @SadhuStas]
 
 if not TOKEN:
     print("Error: BOT_TOKEN is not set in .env")
@@ -33,7 +33,7 @@ dp = Dispatcher()
 
 def is_admin(user: types.User) -> bool:
     """Проверка, является ли пользователь админом."""
-    return user.username and user.username.lower() == ADMIN_USERNAME.lower()
+    return user.username and user.username.lower() in [u.lower() for u in ADMIN_USERNAMES]
 
 
 async def send_video_note_or_placeholder(bot: Bot, chat_id: int, video_path: str, placeholder: str):
@@ -81,11 +81,28 @@ async def send_warmup_video(bot: Bot, chat_id: int, video_file_id: str, caption:
 async def cmd_start(message: types.Message, bot: Bot):
     """Приветственное сообщение с видео и кнопкой регистрации."""
     
-    # Сохраняем пользователя
+    # Парсим реферальную ссылку (start_param)
+    ref_by = None
+    args = message.text.split()
+    if len(args) > 1:
+        param = args[1]
+        if param.startswith("ref_"):
+            try:
+                ref_by = int(param.replace("ref_", ""))
+                # Не записывать себя как реферера
+                if ref_by == message.from_user.id:
+                    ref_by = None
+                else:
+                    logging.info(f"User {message.from_user.id} came from referral link of user {ref_by}")
+            except ValueError:
+                pass
+    
+    # Сохраняем пользователя с реферером
     await database.add_user(
         message.from_user.id,
         message.from_user.username,
-        message.from_user.full_name
+        message.from_user.full_name,
+        ref_by=ref_by
     )
     
     # Кнопка регистрации
@@ -523,11 +540,22 @@ async def main():
         # Setup Scheduler for reminders
         scheduler.setup_scheduler(bot)
         
-        logging.info("Bot starting...")
-        await dp.start_polling(bot)
+        # Start API server for Mini App
+        import api
+        api_port = int(os.getenv('PORT', 8080))
+        api_runner = await api.start_api_server(host='0.0.0.0', port=api_port)
+        
+        logging.info("Bot and API server starting...")
+        
+        try:
+            await dp.start_polling(bot)
+        finally:
+            # Cleanup API server on exit
+            await api_runner.cleanup()
     else:
         logging.warning("BOT_TOKEN not found. Bot will not start polling.")
 
 
 if __name__ == "__main__":
     asyncio.run(main())
+

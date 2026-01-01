@@ -121,23 +121,23 @@ REMINDER_1H = """
 """
 
 REMINDER_START = """
-🔴 **МЫ НАЧИНАЕМ!**
+🔴 МЫ НАЧИНАЕМ!
 
-Эфир «Гвозди Просто» стартовал!
+Эфир "Гвозди Просто" стартовал!
 
-👉 **Подключайся:** {stream_link}
+👉 Подключайся: {stream_link}
 
 Не опаздывай — самое важное в начале! 💪
 """
 
 REMINDER_START_NO_LINK = """
-🔴 **МЫ НАЧИНАЕМ!**
+🔴 МЫ НАЧИНАЕМ!
 
-Эфир «Гвозди Просто» стартовал!
+Эфир "Гвозди Просто" стартовал!
 
 ⚠️ Ссылка на эфир скоро будет опубликована в канале.
 
-📢 Следи за каналом: t.me/telminov_life8
+📢 Следи за каналом
 """
 
 # ═══════════════════════════════════════════════════════════════
@@ -266,7 +266,7 @@ UNKNOWN_COMMAND = """
 """
 
 CHANNEL_LINK = "https://t.me/telminov_life8"
-ADMIN_USERNAME = "evgenii_sharapov"
+ADMIN_USERNAMES = ["evgenii_sharapov", "sadhustas"]  # Список админов
 
 # Настройки эфира
 WEBINAR_DATE = "2026-01-05 19:00:00"
@@ -288,11 +288,13 @@ VIDEO_4_FILE_ID = "BAACAgIAAxkBAAMraVQ8lF_KTl9a_lnjfFjFsInGvNkAAoWVAAL48aBKNrknQ
 VIDEO_5_FILE_ID = "BAACAgIAAxkBAAMtaVQ8vaEO3VEi___f27CN-H9trxsAAoeVAAL48aBKNhRvr_urhTU4BA"
 
 WARMUP_1_TEXT = """
-📅 **Эфир уже скоро!**
+📅 Эфир уже скоро!
 
 Здесь ты узнаешь, как включить тело, выключить стресс и перезапустить себя.
 
 🎁 И в конце — розыгрыш доски Садху среди живых участников!
+
+✨ Нажимай кнопку «Забронировать место» 👇
 """
 
 WARMUP_2_TEXT = """
@@ -336,15 +338,15 @@ def get_warmup_video(video_num: int):
         return {
             "file_id": VIDEO_1_FILE_ID,
             "caption": WARMUP_1_TEXT,
-            "button_text": "👇 Бронируй место",
-            "button_url": "https://p.edpro.biz/gvozdi-prosto"  # Заглушка, если есть ссылка на лендинг/регистрацию
+            "button_text": "✨ Забронировать место",
+            "callback_data": "register_webinar"
         }
     elif video_num == 2:
         return {
             "file_id": VIDEO_2_FILE_ID,
             "caption": WARMUP_2_TEXT,
-            "button_text": None,
-            "button_url": None
+            "button_text": "🎁 Участвовать в розыгрыше",
+            "callback_data": "start_recommend"
         }
     elif video_num == 3:
         # Форматируем дату для "Завтра"
