@@ -170,7 +170,7 @@ async def get_referral_link(request):
     """
     try:
         telegram_id = int(request.match_info['telegram_id'])
-        bot_username = "GvozdiProstoBot"  # TODO: получать динамически
+        bot_username = "SadhuStas_bot"
         
         referral_link = f"https://t.me/{bot_username}?start=ref_{telegram_id}"
         share_text = "Присоединяйся к эфиру про практику на гвоздях! 🔥"
