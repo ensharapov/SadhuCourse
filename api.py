@@ -314,6 +314,7 @@ def create_app():
     app = web.Application(middlewares=[cors_middleware])
     
     # Роуты API
+    app.router.add_get('/', health_check)  # Railway health check on root
     app.router.add_get('/api/health', health_check)
     app.router.add_get('/api/user/{telegram_id}', get_user_data)
     app.router.add_get('/api/mode', get_app_mode)
