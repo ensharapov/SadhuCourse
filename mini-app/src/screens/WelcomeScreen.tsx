@@ -45,6 +45,17 @@ export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
                 phone,
                 goal
             });
+        } else {
+            // Показываем ошибку если не удалось зарегистрироваться
+            // Используем haptic feedback для ошибки
+            hapticFeedback('error');
+
+            // Пытаемся показать сообщение об ошибке
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.showAlert(`Не удалось записаться.\nПроверьте интернет соединение.\n\nAPI: ${import.meta.env.VITE_API_URL}`);
+            } else {
+                alert('Не удалось записаться.');
+            }
         }
     };
 
