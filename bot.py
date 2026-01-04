@@ -105,9 +105,13 @@ async def cmd_start(message: types.Message, bot: Bot):
         ref_by=ref_by
     )
     
-    # Кнопка регистрации
+    # Кнопка регистрации — открывает Mini App сразу
+    from aiogram.types import WebAppInfo
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=messages.REGISTER_BUTTON, callback_data="register_webinar")]
+        [InlineKeyboardButton(
+            text=messages.REGISTER_BUTTON, 
+            web_app=WebAppInfo(url="https://mini-in01xcf1c-sharapovs-projects.vercel.app")
+        )]
     ])
     
     # Отправляем видео с текстом и кнопкой
@@ -192,16 +196,22 @@ async def send_confirmation_delayed(bot: Bot, user_id: int, delay_seconds: int =
     await asyncio.sleep(delay_seconds)
     
     try:
-        # Кнопка участия в розыгрыше
+        # Кнопка для открытия Mini App на дашборде
+        from aiogram.types import WebAppInfo
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="🎁 Участвовать в розыгрыше", callback_data="start_recommend")]
+            [InlineKeyboardButton(
+                text="🎁 Участвовать в розыгрыше", 
+                web_app=WebAppInfo(url="https://mini-in01xcf1c-sharapovs-projects.vercel.app")
+            )]
         ])
         
-        # Отправляем видео #2 с кнопкой (без текста)
+        # Отправляем видео #2 с текстом и кнопкой
         await bot.send_video(
             user_id,
             messages.VIDEO_2_FILE_ID,
-            reply_markup=keyboard
+            caption=messages.WARMUP_2_TEXT,
+            reply_markup=keyboard,
+            parse_mode="Markdown"
         )
     except Exception as e:
         logging.warning(f"Failed to send confirmation to {user_id}: {e}")

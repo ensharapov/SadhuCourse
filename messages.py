@@ -120,14 +120,32 @@ REMINDER_1H = """
 Ссылка на эфир придёт за 5 минут до старта 🚀
 """
 
+REMINDER_5MIN = """
+☕️ **5 минут до старта!**
+
+Завари чай/кофе, займи удобное место.
+Эфир начинается ровно в 19:00 МСК.
+
+👇 Подключайся:
+"""
+
 REMINDER_START = """
-🔴 МЫ НАЧИНАЕМ!
+🔴 **МЫ НАЧИНАЕМ!**
 
 Эфир "Гвозди Просто" стартовал!
 
 👉 Подключайся: {stream_link}
 
 Не опаздывай — самое важное в начале! 💪
+"""
+
+REMINDER_7MIN = """
+🔥 **Эфир в самом разгаре!**
+
+Уже разбираем первую технику — подключайся скорее!
+Не опаздывай на розыгрыш доски 🎁
+
+👇 Ссылка на эфир:
 """
 
 REMINDER_START_NO_LINK = """
@@ -273,19 +291,19 @@ WEBINAR_DATE = "2026-01-05 19:00:00"
 STREAM_LINK = None  # Установить через /set_stream_link
 
 # Цены
-COURSE_PRICE = 5990
-COURSE_PRICE_DISCOUNT = 4790
+COURSE_PRICE = 3990
+COURSE_PRICE_DISCOUNT = 2990
 
 # ═══════════════════════════════════════════════════════════════
 # ПРОГРЕВ-СЕРИЯ (ВИДЕО)
 # ═══════════════════════════════════════════════════════════════
 
-# Здесь нужно вставить file_id, которые ты получишь через /debug
-VIDEO_1_FILE_ID = "BAACAgIAAxkBAAMkaVQ2LCaRx1mQzKSGXorY68PFgXoAAhOVAAL48aBKATNUbtSrvEk4BA"
-VIDEO_2_FILE_ID = "BAACAgIAAxkBAAMnaVQ5OIuw5rBw45OgYsiUGSZx_DUAAjiVAAL48aBKSp68dX2bvo84BA"
-VIDEO_3_FILE_ID = "BAACAgIAAxkBAAMpaVQ8aFbER2S5Uq_6abvylw4ghP8AAoCVAAL48aBKl5Hz67O72YE4BA"
-VIDEO_4_FILE_ID = "BAACAgIAAxkBAAMraVQ8lF_KTl9a_lnjfFjFsInGvNkAAoWVAAL48aBKNrknQakw6R84BA"
-VIDEO_5_FILE_ID = "BAACAgIAAxkBAAMtaVQ8vaEO3VEi___f27CN-H9trxsAAoeVAAL48aBKNhRvr_urhTU4BA"
+# File IDs для прогревочных видео (получены через /debug)
+VIDEO_1_FILE_ID = "BAACAgIAAxkBAAMIaVpmkyHP9X2wxnXti4w4lSdfitIAAhOVAAL48aBKaSkKl5bQWuU4BA"
+VIDEO_2_FILE_ID = "BAACAgIAAxkBAAMKaVpmnr0ELbyuErRnEkYp5OsaFs0AAjiVAAL48aBKX1NS5gZ_VY04BA"
+VIDEO_3_FILE_ID = "BAACAgIAAxkBAAMMaVpmqZBLOLisFRHq_kbnBXN3xeUAAoCVAAL48aBK9urpDNZVO9w4BA"
+VIDEO_4_FILE_ID = "BAACAgIAAxkBAAMOaVpmsT-UluFEQbQNTGZASUVnjBgAAoWVAAL48aBKe9inLiV_sn84BA"
+VIDEO_5_FILE_ID = "BAACAgIAAxkBAAMQaVpmug3mASlcNlxTQ5EVAvl9RFAAAoeVAAL48aBK5__5LJOrfGw4BA"
 
 WARMUP_1_TEXT = """
 📅 Эфир уже скоро!
@@ -294,7 +312,7 @@ WARMUP_1_TEXT = """
 
 🎁 И в конце — розыгрыш доски Садху среди живых участников!
 
-✨ Нажимай кнопку «Забронировать место» 👇
+👇 Нажимай, бронируй место.
 """
 
 WARMUP_2_TEXT = """
@@ -324,7 +342,7 @@ WARMUP_4_TEXT = """
 WARMUP_5_TEXT = """
 🎁 **Специальная скидка 20% на курс “ГВОЗДИ ПРОСТО”**
 
-🔥🔥🔥 **2990р** вместо 3990р
+🔥🔥🔥 **2990₽** вместо 3990₽
 
 ⚡ Только 12 часов после эфира.
 Бонус: чеклист ежедневных практик.

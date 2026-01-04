@@ -83,6 +83,8 @@ async def send_warmup_job(bot: Bot, video_num: int):
     logging.info(f"Warmup #{video_num} sent to {count} users")
 
 
+
+
 async def send_reminder_with_link(bot: Bot):
     """Отправка напоминания о старте с ссылкой."""
     stream_link = await database.get_stream_link()
@@ -93,6 +95,37 @@ async def send_reminder_with_link(bot: Bot):
         text = messages.REMINDER_START_NO_LINK
     
     await send_reminder(bot, text)
+
+
+async def send_reminder_with_button(bot: Bot, text: str, button_text: str = "🔴 Перейти к эфиру"):
+    """Отправка напоминания с кнопкой-ссылкой на эфир."""
+    stream_link = await database.get_stream_link()
+    
+    users = await database.get_registered_users()
+    count = 0
+    
+    # Создаём кнопку с ссылкой
+    keyboard = None
+    if stream_link:
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=button_text, url=stream_link)]
+        ])
+    
+    for user_id in users:
+        try:
+            await bot.send_message(
+                user_id, 
+                text, 
+                reply_markup=keyboard,
+                parse_mode="Markdown"
+            )
+            count += 1
+        except Exception as e:
+            logging.warning(f"Failed to send reminder to {user_id}: {e}")
+            await database.update_status(user_id, False)
+    
+    logging.info(f"Reminder with button sent to {count} users")
+
 
 
 async def send_post_webinar_offer(bot: Bot, hours_left: int):
@@ -160,10 +193,24 @@ def setup_scheduler(bot: Bot):
         args=[bot, 4], id='warmup_4', replace_existing=True
     )
     
+    # За 5 минут — напоминание с кнопкой
+    scheduler.add_job(
+        send_reminder_with_button, 'date', run_date=webinar_dt - timedelta(minutes=5),
+        args=[bot, messages.REMINDER_5MIN, "🔴 Перейти к эфиру"], 
+        id='reminder_5min', replace_existing=True
+    )
+    
     # СТАРТ ЭФИРА (без изменений)
     scheduler.add_job(
         send_reminder_with_link, 'date', run_date=webinar_dt,
         args=[bot], id='reminder_start', replace_existing=True
+    )
+    
+    # Через 7 минут — напоминание "эфир в разгаре"
+    scheduler.add_job(
+        send_reminder_with_button, 'date', run_date=webinar_dt + timedelta(minutes=7),
+        args=[bot, messages.REMINDER_7MIN, "📺 Подключиться сейчас"], 
+        id='reminder_7min', replace_existing=True
     )
     
     # ═══════════════════════════════════════════════════════════════
