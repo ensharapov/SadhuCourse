@@ -19,6 +19,7 @@ export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
     const [name, setName] = useState(user?.first_name || '');
     const [phone, setPhone] = useState('');
     const [goal, setGoal] = useState<Goal | ''>('');
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     // Проверяем URL параметр для прямого перехода на форму
     const urlParams = new URLSearchParams(window.location.search);
@@ -27,34 +28,39 @@ export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
 
     const handleRegister = async () => {
         if (!userId || !goal) return;
+        setErrorMsg(null);
 
         hapticFeedback('success');
 
-        const result = await registerUser({
-            telegram_id: userId,
-            name,
-            phone,
-            goal
-        });
-
-        if (result) {
-            // Отправляем данные боту и закрываем приложение
-            sendData({
-                action: 'register_webinar',
+        try {
+            const result = await registerUser({
+                telegram_id: userId,
                 name,
                 phone,
                 goal
             });
-        } else {
-            // Показываем ошибку если не удалось зарегистрироваться
-            // Используем haptic feedback для ошибки
+
+            if (result) {
+                // Отправляем данные боту и закрываем приложение
+                sendData({
+                    action: 'register_webinar',
+                    name,
+                    phone,
+                    goal
+                });
+            } else {
+                throw new Error('API returned null');
+            }
+        } catch (e) {
             hapticFeedback('error');
+            const msg = e instanceof Error ? e.message : String(e);
+            setErrorMsg(msg);
 
             // Пытаемся показать сообщение об ошибке
             if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.showAlert(`Не удалось записаться.\nПроверьте интернет соединение.\n\nAPI: ${import.meta.env.VITE_API_URL}`);
+                window.Telegram.WebApp.showAlert(`Ошибка: ${msg}\nAPI: ${import.meta.env.VITE_API_URL || 'HARDCODED'}`);
             } else {
-                alert('Не удалось записаться.');
+                alert(`Ошибка: ${msg}`);
             }
         }
     };
@@ -164,6 +170,14 @@ export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
 
             {/* Submit */}
             <div className="space-y-3 mt-8">
+                {errorMsg && (
+                    <div className="text-red-500 text-sm text-center p-2 bg-red-900/20 rounded border border-red-500/30">
+                        {errorMsg}
+                        <div className="text-xs text-white/50 mt-1">
+                            API: {import.meta.env.VITE_API_URL || 'HARDCODED'}
+                        </div>
+                    </div>
+                )}
                 <button
                     onClick={handleRegister}
                     disabled={!goal || loading}
