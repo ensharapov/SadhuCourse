@@ -105,12 +105,11 @@ async def cmd_start(message: types.Message, bot: Bot):
         ref_by=ref_by
     )
     
-    # Кнопка регистрации — открывает Mini App сразу на форму
-    from aiogram.types import WebAppInfo
+    # Кнопка регистрации — МГНОВЕННАЯ (Inline)
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text=messages.REGISTER_BUTTON, 
-            web_app=WebAppInfo(url="https://mini-app-sharapovs-projects.vercel.app?form=1")
+            callback_data="register_webinar"
         )]
     ])
     
@@ -172,12 +171,12 @@ async def handle_registration(callback: types.CallbackQuery, bot: Bot):
     # Обновляем сообщение
     try:
         await callback.message.edit_reply_markup(reply_markup=None)
-        await callback.message.reply("✅ **Место забронировано!**\n\nЖди подтверждение через 5 минут...", parse_mode="Markdown")
+        await callback.message.reply("✅ **Место забронировано!**\n\nЖди напоминания перед эфиром 📅", parse_mode="Markdown")
     except Exception as e:
         logging.warning(f"Error updating message: {e}")
     
-    # Запускаем отложенное подтверждение через 5 минут
-    asyncio.create_task(send_confirmation_delayed(bot, user_id, delay_seconds=300))
+    # Запускаем отложенное подтверждение через 30 секунд
+    asyncio.create_task(send_confirmation_delayed(bot, user_id, delay_seconds=30))
 
 
 @dp.message(F.web_app_data)
