@@ -12,8 +12,8 @@ interface WelcomeScreenProps {
 
 type Goal = 'stress' | 'energy' | 'health';
 
-export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
-    const { user, userId, hapticFeedback } = useTelegram();
+export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
+    const { user, userId, hapticFeedback, sendData } = useTelegram();
     const { registerUser, loading } = useApi();
 
     const [name, setName] = useState(user?.first_name || '');
@@ -38,7 +38,13 @@ export function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         });
 
         if (result) {
-            onComplete();
+            // Отправляем данные боту и закрываем приложение
+            sendData({
+                action: 'register_webinar',
+                name,
+                phone,
+                goal
+            });
         }
     };
 
