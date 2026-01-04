@@ -173,7 +173,7 @@ async def get_referral_link(request):
         bot_username = "SadhuStas_bot"
         
         referral_link = f"https://t.me/{bot_username}?start=ref_{telegram_id}"
-        share_text = "Присоединяйся к эфиру про практику на гвоздях! 🔥"
+        share_text = "Привет! Я иду на эфир про то, как быстро снять стресс и зарядиться энергией. Это бесплатно, погнали со мной! 👇"
         
         return web.json_response({
             "success": True,
