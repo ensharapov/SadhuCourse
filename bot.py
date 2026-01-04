@@ -110,7 +110,7 @@ async def cmd_start(message: types.Message, bot: Bot):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text=messages.REGISTER_BUTTON, 
-            web_app=WebAppInfo(url="https://mini-in01xcf1c-sharapovs-projects.vercel.app?form=1")
+            web_app=WebAppInfo(url="https://mini-app-sharapovs-projects.vercel.app?form=1")
         )]
     ])
     
@@ -201,7 +201,7 @@ async def send_confirmation_delayed(bot: Bot, user_id: int, delay_seconds: int =
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(
                 text="🎁 Участвовать в розыгрыше", 
-                web_app=WebAppInfo(url="https://mini-in01xcf1c-sharapovs-projects.vercel.app")
+                web_app=WebAppInfo(url="https://mini-app-sharapovs-projects.vercel.app")
             )]
         ])
         
