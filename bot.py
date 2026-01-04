@@ -105,12 +105,12 @@ async def cmd_start(message: types.Message, bot: Bot):
         ref_by=ref_by
     )
     
-    # Кнопка регистрации — открывает Mini App сразу
+    # Кнопка регистрации — открывает Mini App сразу на форму
     from aiogram.types import WebAppInfo
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text=messages.REGISTER_BUTTON, 
-            web_app=WebAppInfo(url="https://mini-in01xcf1c-sharapovs-projects.vercel.app")
+            web_app=WebAppInfo(url="https://mini-in01xcf1c-sharapovs-projects.vercel.app?form=1")
         )]
     ])
     
@@ -182,11 +182,11 @@ async def handle_web_app_data(message: types.Message, bot: Bot):
             # Регистрируем в БД
             await database.set_webinar_registration(user_id)
             
-            # Подтверждаем пользователю
-            await message.reply("✅ **Место забронировано через приложение!**\n\nЖди подтверждение через 5 минут...", parse_mode="Markdown")
+            # Мгновенное подтверждение
+            await message.reply("✅ **Место забронировано!**\n\nЖди напоминания перед эфиром 📅", parse_mode="Markdown")
             
-            # Запускаем отложенное подтверждение
-            asyncio.create_task(send_confirmation_delayed(bot, user_id, delay_seconds=300))
+            # Отправляем видео 2 через 30 секунд
+            asyncio.create_task(send_confirmation_delayed(bot, user_id, delay_seconds=30))
             
     except Exception as e:
         logging.error(f"Failed to process Web App data: {e}")
