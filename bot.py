@@ -516,7 +516,7 @@ async def cmd_test_scenario(message: types.Message, bot: Bot):
 
 
 async def run_test_sequence(bot: Bot, user_id: int):
-    """Отправка тестовой серии напрямую пользователю."""
+    """Отправка полной тестовой серии как в реальности (11 сообщений)."""
     
     async def send_test_video(video_num: int):
         """Отправить прогревочное видео с правильной кнопкой."""
@@ -525,16 +525,13 @@ async def run_test_sequence(bot: Bot, user_id: int):
             logging.error(f"Warmup #{video_num} not found")
             return
             
-        # Формируем кнопку
         keyboard = None
         if warmup.get('button_text'):
             if warmup.get('callback_data'):
-                # Callback кнопка
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
                     [InlineKeyboardButton(text=warmup['button_text'], callback_data=warmup['callback_data'])]
                 ])
             elif warmup.get('button_url'):
-                # URL кнопка
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
                     [InlineKeyboardButton(text=warmup['button_text'], url=warmup['button_url'])]
                 ])
@@ -542,53 +539,98 @@ async def run_test_sequence(bot: Bot, user_id: int):
         try:
             if warmup.get('file_id'):
                 await bot.send_video(
-                    user_id,
-                    warmup['file_id'],
-                    caption=warmup['caption'],
-                    reply_markup=keyboard,
-                    parse_mode="Markdown"
+                    user_id, warmup['file_id'], caption=warmup['caption'],
+                    reply_markup=keyboard, parse_mode="Markdown"
                 )
             else:
                 await bot.send_message(
-                    user_id,
-                    warmup['caption'],
-                    reply_markup=keyboard,
-                    parse_mode="Markdown"
+                    user_id, warmup['caption'], reply_markup=keyboard, parse_mode="Markdown"
                 )
             logging.info(f"Test: Sent video #{video_num} to {user_id}")
         except Exception as e:
             logging.error(f"Test: Failed to send video #{video_num}: {e}")
     
-    # Последовательная отправка с интервалом 1 минута
-    # Видео #1
+    async def send_reminder(text: str, button_text: str, button_url: str):
+        """Отправить напоминание с кнопкой."""
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=button_text, url=button_url)]
+        ])
+        await bot.send_message(user_id, text, reply_markup=keyboard, parse_mode="Markdown")
+    
+    async def send_deadline(hours_left: int):
+        """Отправить дедлайн-напоминание с кнопкой оплаты."""
+        if hours_left == 3:
+            text = messages.POST_WEBINAR_DEADLINE_3H.format(buyers_count=50, deadline="07:00")
+            btn = "💳 Купить со скидкой"
+        elif hours_left == 1:
+            text = messages.POST_WEBINAR_DEADLINE_1H.format(buyers_count=50, deadline="07:00")
+            btn = "🔥 Купить сейчас"
+        else:
+            text = messages.POST_WEBINAR_CLOSED
+            btn = None
+        
+        keyboard = None
+        if btn:
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text=btn, url=messages.PAYMENT_LINK)]
+            ])
+        await bot.send_message(user_id, text, reply_markup=keyboard, parse_mode="Markdown")
+    
+    # ═══════════════════════════════════════════════════════════════
+    # ПОЛНАЯ ЦЕПОЧКА (11 сообщений, интервал 1 минута)
+    # ═══════════════════════════════════════════════════════════════
+    
+    # 1. Видео #1 — Анонс (за 5 дней)
     await asyncio.sleep(60)
     await send_test_video(1)
     
-    # Видео #2
+    # 2. Видео #2 — Вовлечение (за 3 дня)
     await asyncio.sleep(60)
     await send_test_video(2)
     
-    # Видео #3
+    # 3. Видео #3 — Завтра эфир (за 1 день)
     await asyncio.sleep(60)
     await send_test_video(3)
     
-    # Видео #4
+    # 4. Видео #4 — Через час (за 1 час)
     await asyncio.sleep(60)
     await send_test_video(4)
     
-    # Напоминание 5 минут до старта
+    # 5. REMINDER_5MIN — 5 минут до старта
     await asyncio.sleep(60)
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔴 Перейти к эфиру", url=messages.CHANNEL_LINK)]
-    ])
-    await bot.send_message(user_id, messages.REMINDER_5MIN, reply_markup=keyboard, parse_mode="Markdown")
-    logging.info(f"Test: Sent reminder to {user_id}")
+    await send_reminder(messages.REMINDER_5MIN, "🔴 Перейти к эфиру", messages.CHANNEL_LINK)
+    logging.info(f"Test: Sent 5min reminder to {user_id}")
     
-    # Видео #5 (оффер)
+    # 6. REMINDER_START — Эфир начался
+    await asyncio.sleep(60)
+    await send_reminder(messages.REMINDER_START_NO_LINK, "🔴 Перейти к эфиру", messages.CHANNEL_LINK)
+    logging.info(f"Test: Sent start reminder to {user_id}")
+    
+    # 7. REMINDER_7MIN — Эфир в разгаре
+    await asyncio.sleep(60)
+    await send_reminder(messages.REMINDER_7MIN, "📺 Подключиться сейчас", messages.CHANNEL_LINK)
+    logging.info(f"Test: Sent 7min reminder to {user_id}")
+    
+    # 8. Видео #5 — Оффер (через 1.5 часа после старта)
     await asyncio.sleep(60)
     await send_test_video(5)
     
-    await bot.send_message(user_id, "✅ **Тестовая серия завершена!**", parse_mode="Markdown")
+    # 9. Дедлайн 3 часа
+    await asyncio.sleep(60)
+    await send_deadline(3)
+    logging.info(f"Test: Sent 3h deadline to {user_id}")
+    
+    # 10. Дедлайн 1 час
+    await asyncio.sleep(60)
+    await send_deadline(1)
+    logging.info(f"Test: Sent 1h deadline to {user_id}")
+    
+    # 11. Закрытие скидки
+    await asyncio.sleep(60)
+    await send_deadline(0)
+    logging.info(f"Test: Sent offer closed to {user_id}")
+    
+    await bot.send_message(user_id, "✅ **Тестовая серия завершена!** (11 сообщений)", parse_mode="Markdown")
 
 
 @dp.message(Command("help"))
