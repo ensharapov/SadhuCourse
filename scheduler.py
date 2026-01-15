@@ -285,7 +285,10 @@ async def start_test_schedule(bot: Bot):
     scheduler.remove_all_jobs()
     logging.info("⚠️ STARTING TEST SCHEDULE ⚠️")
     
-    now = datetime.now()
+    # Используем timezone-aware datetime для совместимости со scheduler
+    import pytz
+    msk = pytz.timezone('Europe/Moscow')
+    now = datetime.now(msk)
     
     # 1. Анонс (через 1 мин)
     scheduler.add_job(send_warmup_job, 'date', run_date=now + timedelta(minutes=1), args=[bot, 1], id='test_w1')
