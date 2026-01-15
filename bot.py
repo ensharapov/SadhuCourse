@@ -517,53 +517,76 @@ async def cmd_test_scenario(message: types.Message, bot: Bot):
 
 async def run_test_sequence(bot: Bot, user_id: int):
     """Отправка тестовой серии напрямую пользователю."""
-    import pytz
-    from datetime import datetime
     
-    msk = pytz.timezone('Europe/Moscow')
+    async def send_test_video(video_num: int):
+        """Отправить прогревочное видео с правильной кнопкой."""
+        warmup = messages.get_warmup_video(video_num)
+        if not warmup:
+            logging.error(f"Warmup #{video_num} not found")
+            return
+            
+        # Формируем кнопку
+        keyboard = None
+        if warmup.get('button_text'):
+            if warmup.get('callback_data'):
+                # Callback кнопка
+                keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text=warmup['button_text'], callback_data=warmup['callback_data'])]
+                ])
+            elif warmup.get('button_url'):
+                # URL кнопка
+                keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text=warmup['button_text'], url=warmup['button_url'])]
+                ])
+        
+        try:
+            if warmup.get('file_id'):
+                await bot.send_video(
+                    user_id,
+                    warmup['file_id'],
+                    caption=warmup['caption'],
+                    reply_markup=keyboard,
+                    parse_mode="Markdown"
+                )
+            else:
+                await bot.send_message(
+                    user_id,
+                    warmup['caption'],
+                    reply_markup=keyboard,
+                    parse_mode="Markdown"
+                )
+            logging.info(f"Test: Sent video #{video_num} to {user_id}")
+        except Exception as e:
+            logging.error(f"Test: Failed to send video #{video_num}: {e}")
     
-    # 1. Видео #1 через 1 минуту
+    # Последовательная отправка с интервалом 1 минута
+    # Видео #1
     await asyncio.sleep(60)
-    warmup_1 = messages.get_warmup_video(1)
-    await send_warmup_video(bot, user_id, warmup_1.get('file_id'), warmup_1['caption'], 
-                            warmup_1.get('button_text'), warmup_1.get('button_url') or warmup_1.get('callback_data'))
-    logging.info(f"Test: Sent video #1 to {user_id}")
+    await send_test_video(1)
     
-    # 2. Видео #2 через 1 минуту
+    # Видео #2
     await asyncio.sleep(60)
-    warmup_2 = messages.get_warmup_video(2)
-    await send_warmup_video(bot, user_id, warmup_2.get('file_id'), warmup_2['caption'],
-                            warmup_2.get('button_text'), warmup_2.get('button_url'))
-    logging.info(f"Test: Sent video #2 to {user_id}")
+    await send_test_video(2)
     
-    # 3. Видео #3 через 1 минуту
+    # Видео #3
     await asyncio.sleep(60)
-    warmup_3 = messages.get_warmup_video(3)
-    await send_warmup_video(bot, user_id, warmup_3.get('file_id'), warmup_3['caption'],
-                            warmup_3.get('button_text'), warmup_3.get('button_url'))
-    logging.info(f"Test: Sent video #3 to {user_id}")
+    await send_test_video(3)
     
-    # 4. Видео #4 через 1 минуту
+    # Видео #4
     await asyncio.sleep(60)
-    warmup_4 = messages.get_warmup_video(4)
-    await send_warmup_video(bot, user_id, warmup_4.get('file_id'), warmup_4['caption'],
-                            warmup_4.get('button_text'), warmup_4.get('button_url'))
-    logging.info(f"Test: Sent video #4 to {user_id}")
+    await send_test_video(4)
     
-    # 5. Напоминание о старте через 1 минуту
+    # Напоминание 5 минут до старта
     await asyncio.sleep(60)
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🔴 Перейти к эфиру", url=messages.CHANNEL_LINK)]
     ])
     await bot.send_message(user_id, messages.REMINDER_5MIN, reply_markup=keyboard, parse_mode="Markdown")
-    logging.info(f"Test: Sent start reminder to {user_id}")
+    logging.info(f"Test: Sent reminder to {user_id}")
     
-    # 6. Оффер через 1 минуту
+    # Видео #5 (оффер)
     await asyncio.sleep(60)
-    warmup_5 = messages.get_warmup_video(5)
-    await send_warmup_video(bot, user_id, warmup_5.get('file_id'), warmup_5['caption'],
-                            warmup_5.get('button_text'), warmup_5.get('button_url'))
-    logging.info(f"Test: Sent video #5 (offer) to {user_id}")
+    await send_test_video(5)
     
     await bot.send_message(user_id, "✅ **Тестовая серия завершена!**", parse_mode="Markdown")
 
