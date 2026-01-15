@@ -172,6 +172,18 @@ async def handle_registration(callback: types.CallbackQuery, bot: Bot):
     try:
         await callback.message.edit_reply_markup(reply_markup=None)
         await callback.message.reply("✅ **Место забронировано!**\n\nЖди напоминания перед эфиром 📅", parse_mode="Markdown")
+        
+        # Предложение подписаться на канал (мягкое)
+        channel_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="📢 Подписаться на канал", url=messages.CHANNEL_LINK)]
+        ])
+        await bot.send_message(
+            user_id,
+            "🔔 **Чтобы не пропустить эфир — подпишись на канал!**\n\n"
+            "Там будут напоминания, полезные материалы и анонсы.",
+            reply_markup=channel_keyboard,
+            parse_mode="Markdown"
+        )
     except Exception as e:
         logging.warning(f"Error updating message: {e}")
     

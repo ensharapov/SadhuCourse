@@ -13,7 +13,7 @@ interface WelcomeScreenProps {
 type Goal = 'stress' | 'energy' | 'health';
 
 export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
-    const { user, userId, hapticFeedback, sendData } = useTelegram();
+    const { user, userId, hapticFeedback, hapticImpact, sendData, close } = useTelegram();
     const { registerUser, loading } = useApi();
 
     const [name, setName] = useState(user?.first_name || '');
@@ -27,9 +27,15 @@ export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
     const [step, setStep] = useState<'intro' | 'form'>(skipIntro ? 'form' : 'intro');
 
     const handleRegister = async () => {
-        if (!userId || !goal) return;
-        setErrorMsg(null);
+        // Убрали молчаливый return!
+        if (!userId) {
+            hapticFeedback('error');
+            alert('Ошибка: App не видит ваш Telegram ID. Попробуйте перезапустить бота (/start).');
+            return;
+        }
+        if (!goal) return; // Кнопка disabled, но на всякий случай
 
+        setErrorMsg(null);
         hapticFeedback('success');
 
         try {
@@ -69,53 +75,36 @@ export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
         return (
             <div className="min-h-screen flex flex-col p-5">
                 {/* Hero */}
+                {/* Content */}
                 <div className="flex-1 flex flex-col items-center justify-center text-center animate-fade-in">
-                    {/* Иконка */}
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center mb-6 shadow-lg shadow-orange-500/30">
-                        <span className="text-5xl">🔥</span>
+                    <div className="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center mb-6">
+                        <span className="text-5xl">👈</span>
                     </div>
 
-                    <h1 className="text-3xl font-bold mb-3">
-                        Гвозди Просто
+                    <h1 className="text-2xl font-bold mb-4">
+                        Почти готово!
                     </h1>
 
-                    <p className="text-white/70 text-lg mb-8 max-w-xs">
-                        Безопасный вход в практику досок Садху
+                    <p className="text-white/70 text-lg mb-8 max-w-xs leading-relaxed">
+                        Чтобы попасть на эфир, нужно нажать кнопку <b>"Забронировать место"</b> прямо в чате с ботом.
                     </p>
 
-                    {/* Цитата */}
-                    <div className="card mb-8 max-w-sm">
-                        <p className="text-lg italic text-white/90">
-                            «Твой путь к внутренней силе начинается здесь»
+                    <div className="card bg-white/5 border-white/10 mb-8">
+                        <p className="text-sm text-white/60">
+                            Вернись в чат и нажми кнопку в сообщении 👇
                         </p>
-                    </div>
-
-                    {/* Что получишь */}
-                    <div className="w-full max-w-sm space-y-3 mb-8">
-                        <div className="flex items-center gap-3 text-left">
-                            <span className="text-2xl">🎯</span>
-                            <span className="text-white/80">Теория и практика</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-left">
-                            <span className="text-2xl">💬</span>
-                            <span className="text-white/80">Ответы на вопросы</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-left">
-                            <span className="text-2xl">🎁</span>
-                            <span className="text-white/80">Розыгрыш доски Садху</span>
-                        </div>
                     </div>
                 </div>
 
                 {/* CTA */}
                 <button
                     onClick={() => {
-                        hapticFeedback('success');
-                        setStep('form');
+                        hapticImpact('light');
+                        close();
                     }}
-                    className="btn btn-primary w-full text-lg py-4"
+                    className="btn btn-secondary w-full py-4"
                 >
-                    Забронировать место на эфир ✨
+                    Вернуться в бот
                 </button>
             </div>
         );
@@ -192,6 +181,11 @@ export function WelcomeScreen({ onComplete: _onComplete }: WelcomeScreenProps) {
                 >
                     ← Назад
                 </button>
+
+                {/* Debug Info */}
+                <div className="text-[10px] text-white/20 text-center mt-4 font-mono">
+                    ID: {userId || 'NULL'} | v{window.Telegram?.WebApp?.version || '?'}
+                </div>
             </div>
         </div>
     );

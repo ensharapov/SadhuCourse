@@ -285,8 +285,11 @@ WEBINAR_DATE = "2026-01-05 19:00:00"
 STREAM_LINK = None  # Установить через /set_stream_link
 
 # Цены
-COURSE_PRICE = 3990
-COURSE_PRICE_DISCOUNT = 2990
+COURSE_PRICE = 2900
+COURSE_PRICE_DISCOUNT = 1500
+
+# Ссылка на оплату
+PAYMENT_LINK = "https://account5889.edpro.biz/widget/show?id=6"
 
 # ═══════════════════════════════════════════════════════════════
 # ПРОГРЕВ-СЕРИЯ (ВИДЕО)
@@ -334,11 +337,12 @@ WARMUP_4_TEXT = """
 """
 
 WARMUP_5_TEXT = """
-🎁 **Специальная скидка 20% на курс “ГВОЗДИ ПРОСТО”**
+🎁 **Специальная скидка почти 50% на курс "ГВОЗДИ ПРОСТО"**
 
-🔥🔥🔥 **2990₽** вместо 3990₽
+🔥🔥🔥 **1500₽** вместо 2900₽
+По промокоду - **Sale**
 
-⚡ Только 12 часов после эфира.
+⚡ Действует только 12 часов после эфира.
 Бонус: чеклист ежедневных практик.
 
 Пора — действуй!
@@ -393,6 +397,6 @@ def get_warmup_video(video_num: int):
             "file_id": VIDEO_5_FILE_ID,
             "caption": WARMUP_5_TEXT,
             "button_text": "💳 Купить со скидкой",
-            "button_url": "https://p.edpro.biz/offer-link" # Ссылка на оплату
+            "button_url": PAYMENT_LINK
         }
     return None

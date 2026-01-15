@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════
+   КАСТОМНЫЕ ПЕРЕМЕННЫЕ (Telegram Theme)
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --tg-theme-bg-color: #0f0f14;
+  --tg-theme-text-color: #ffffff;
+  --tg-theme-hint-color: #97989a;
+  --tg-theme-link-color: #5eb5f7;
+  --tg-theme-button-color: #5eb5f7;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #1c1c21;
+
+  /* Акцентные цвета */
+  --accent-orange: #ff6b35;
+  --accent-gold: #d4a853;
+  --accent-green: #4ade80;
+
+  /* Градиенты */
+  --gradient-primary: linear-gradient(135deg, #ff6b35, #d4a853);
+  --gradient-success: linear-gradient(135deg, #22c55e, #14b8a6);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   БАЗОВЫЕ СТИЛИ
+   ═══════════════════════════════════════════════════════════════ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--tg-theme-bg-color, #0f0f14);
+  color: var(--tg-theme-text-color, #ffffff);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   КОМПОНЕНТЫ
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn {
+  @apply px-6 py-3 rounded-xl font-semibold text-center transition-all duration-200;
+  @apply active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  @apply text-white shadow-lg;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 25px rgba(255, 107, 53, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  @apply bg-white/10 text-white border border-white/20;
+}
+
+.card {
+  @apply bg-white/5 backdrop-blur-xl rounded-2xl p-5 border border-white/10;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   АНИМАЦИИ
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ПРОГРЕСС-БАР
+   ═══════════════════════════════════════════════════════════════ */
+
+.progress-bar {
+  @apply h-3 bg-white/10 rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+  @apply h-full rounded-full transition-all duration-500 ease-out;
+  background: var(--gradient-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ТАЙМЕР
+   ═══════════════════════════════════════════════════════════════ */
+
+.timer-block {
+  @apply flex flex-col items-center;
+}
+
+.timer-value {
+  @apply text-4xl font-bold tabular-nums;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.timer-label {
+  @apply text-xs text-white/50 uppercase tracking-wider mt-1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ФОРМА
+   ═══════════════════════════════════════════════════════════════ */
+
+.input {
+  @apply w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl;
+  @apply text-white placeholder:text-white/40;
+  @apply focus:outline-none focus:border-[#ff6b35] focus:ring-1 focus:ring-[#ff6b35]/50;
+  @apply transition-all duration-200;
+}
+
+.select {
+  @apply w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl;
+  @apply text-white appearance-none cursor-pointer;
+  @apply focus:outline-none focus:border-[#ff6b35];
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ЖИВОЙ БЕЙДЖ
+   ═══════════════════════════════════════════════════════════════ */
+
+.live-badge {
+  @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium;
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.live-badge::before {
+  content: '';
+  @apply w-2 h-2 rounded-full bg-red-500;
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}

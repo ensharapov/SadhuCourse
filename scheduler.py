@@ -129,9 +129,7 @@ async def send_reminder_with_button(bot: Bot, text: str, button_text: str = "�
 
 
 async def send_post_webinar_offer(bot: Bot, hours_left: int):
-    """Отправка пост-эфир предложения с дедлайном."""
-    # Используем логику прогревочного видео #5 для первого оффера (12 часов)
-    # Но здесь оставим старую логику для дедлайнов (3ч, 1ч, 0ч)
+    """Отправка пост-эфир предложения с дедлайном и кнопкой оплаты."""
     
     buyers_count = await database.get_buyers_count()
     
@@ -140,22 +138,52 @@ async def send_post_webinar_offer(bot: Bot, hours_left: int):
     deadline_dt = webinar_dt + timedelta(hours=12)
     deadline_str = deadline_dt.strftime("%H:%M")
     
+    # Ссылка на оплату
+    payment_url = messages.PAYMENT_LINK
+    
     if hours_left == 3:
         text = messages.POST_WEBINAR_DEADLINE_3H.format(
             buyers_count=buyers_count,
             deadline=deadline_str
         )
+        button_text = "💳 Купить со скидкой"
     elif hours_left == 1:
         text = messages.POST_WEBINAR_DEADLINE_1H.format(
             buyers_count=buyers_count,
             deadline=deadline_str
         )
+        button_text = "🔥 Купить сейчас"
     elif hours_left == 0:
         text = messages.POST_WEBINAR_CLOSED
+        button_text = None  # Без кнопки, скидка закончилась
     else:
-        return # Остальные случаи (12ч) обрабатываются через send_warmup_job(5)
+        return
     
-    await send_reminder(bot, text, only_registered=True)
+    # Создаём кнопку
+    keyboard = None
+    if button_text and payment_url:
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=button_text, url=payment_url)]
+        ])
+    
+    # Отправляем всем зарегистрированным
+    users = await database.get_registered_users()
+    count = 0
+    
+    for user_id in users:
+        try:
+            await bot.send_message(
+                user_id, 
+                text, 
+                reply_markup=keyboard,
+                parse_mode="Markdown"
+            )
+            count += 1
+        except Exception as e:
+            logging.warning(f"Failed to send deadline reminder to {user_id}: {e}")
+            await database.update_status(user_id, False)
+    
+    logging.info(f"Deadline reminder ({hours_left}h) sent to {count} users")
 
 
 def setup_scheduler(bot: Bot):
